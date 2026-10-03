@@ -1,13 +1,25 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useTTS } from '@/hooks/useTTS';
 import Mermaid from '@/components/Mermaid';
+import './retro.css';
 
 export default function SubjectClient({ subjectMeta, studyData }: { subjectMeta: any, studyData: any }) {
   const { speak, pause, resume, stop, isPlaying, isPaused, rate, setRate, currentId, charIndex } = useTTS();
   const [activeSection, setActiveSection] = useState(0);
+  const [isRetroMode, setIsRetroMode] = useState(false);
+  const [currentTime, setCurrentTime] = useState("");
+
+  // Hydration-safe clock
+  useEffect(() => {
+    setCurrentTime(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+    const interval = setInterval(() => {
+      setCurrentTime(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+    }, 60000);
+    return () => clearInterval(interval);
+  }, []);
 
   const handlePlayToggle = (text: string, id: string) => {
     if (currentId === id) {
@@ -23,9 +35,165 @@ export default function SubjectClient({ subjectMeta, studyData }: { subjectMeta:
     }
   };
 
+  if (isRetroMode) {
+    return (
+      <div className="retro-theme">
+        <div className="desktop">
+          <div className="window">
+            <div className="titlebar">
+              <span className="titlebar-icon">🌸</span>
+              <span className="titlebar-text">{subjectMeta.id}.doc - WordPad</span>
+              <div className="titlebar-controls">
+                <button className="win-btn" onClick={() => setIsRetroMode(false)} aria-label="Minimize" title="Exit Retro Mode">_</button>
+                <button className="win-btn" aria-label="Maximize">□</button>
+                <Link href="/" onClick={stop} className="win-btn win-btn-close flex items-center justify-center text-white" aria-label="Close" style={{ textDecoration: 'none' }}>×</Link>
+              </div>
+            </div>
+
+            <div className="menubar">
+              {studyData.map((section: any, idx: number) => (
+                <span 
+                  key={idx} 
+                  onClick={() => setActiveSection(idx)}
+                  style={{
+                    fontWeight: activeSection === idx ? 'bold' : 'normal',
+                    textDecoration: activeSection === idx ? 'underline' : 'none'
+                  }}
+                >
+                  {section.section.replace('SECTION ', 'Sec ')}
+                </span>
+              ))}
+              <span 
+                onClick={() => setIsRetroMode(false)} 
+                style={{ marginLeft: 'auto', color: 'var(--velvet-purple)', fontWeight: 'bold' }}
+                title="Switch back to Modern UI"
+              >
+                [Exit Retro]
+              </span>
+            </div>
+
+            <div className="content-panel">
+              {studyData.length === 0 ? (
+                <div style={{ textAlign: 'center', padding: '2rem' }}>
+                  <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>📚</div>
+                  {subjectMeta.id === 'ad-designing' ? (
+                    <>
+                      <h2 style={{ color: 'var(--velvet-purple)' }}>No written exam.</h2>
+                      <p>Viva only.</p>
+                    </>
+                  ) : (
+                    <>
+                      <h2 style={{ color: 'var(--velvet-purple)' }}>Notes pending.</h2>
+                      <p>Study material will be uploaded soon.</p>
+                    </>
+                  )}
+                </div>
+              ) : (
+                studyData[activeSection]?.items.map((item: any, idx: number) => {
+                  const itemId = `item-${activeSection}-${idx}`;
+                  const isActive = currentId === itemId;
+                  
+                  return (
+                    <div key={idx} style={{ marginBottom: '2.5rem' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
+                        <h1 style={{ margin: 0, paddingRight: '1rem' }}>{idx + 1}. {item.q}</h1>
+                        <button 
+                          onClick={() => handlePlayToggle(item.a, itemId)}
+                          style={{ 
+                            flexShrink: 0,
+                            padding: '3px 8px', 
+                            fontFamily: 'Tahoma', 
+                            fontSize: '11px', 
+                            fontWeight: 'bold',
+                            cursor: 'pointer',
+                            background: isActive && !isPaused ? 'var(--velvet-purple)' : 'var(--lilac)',
+                            color: isActive && !isPaused ? 'white' : 'black',
+                            borderTop: '2px solid var(--white)',
+                            borderLeft: '2px solid var(--white)',
+                            borderBottom: '2px solid var(--midnight-violet)',
+                            borderRight: '2px solid var(--midnight-violet)',
+                          }}
+                        >
+                          {isActive && !isPaused ? '⏸ Pause' : '▶ Play'}
+                        </button>
+                      </div>
+                      
+                      {item.diagram && <Mermaid chart={item.diagram} />}
+
+                      <div style={{ whiteSpace: 'pre-wrap', lineHeight: '1.55' }}>
+                        {isActive ? (() => {
+                          const remaining = item.a.slice(charIndex);
+                          const match = remaining.match(/\s|[.,!?]/);
+                          const wordLen = match && match.index !== undefined ? match.index : remaining.length;
+                          
+                          const before = item.a.slice(0, charIndex);
+                          const currentWord = item.a.slice(charIndex, charIndex + wordLen);
+                          const after = item.a.slice(charIndex + wordLen);
+
+                          return (
+                            <>
+                              <span style={{ opacity: 0.6 }}>{before}</span>
+                              <span style={{ backgroundColor: 'var(--velvet-purple)', color: 'white', padding: '0 2px' }}>{currentWord}</span>
+                              <span>{after}</span>
+                            </>
+                          );
+                        })() : (
+                          item.a
+                        )}
+                      </div>
+                    </div>
+                  );
+                })
+              )}
+            </div>
+
+            <div className="statusbar">
+              <div className="statusbar-panel" style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                {isPlaying && !isPaused ? '🔊 Reading aloud...' : 'Ready'}
+                {/* Embedded Speed Control */}
+                <select 
+                  value={rate}
+                  onChange={(e) => setRate(parseFloat(e.target.value))}
+                  style={{ 
+                    fontSize: '10px', 
+                    background: 'var(--white)', 
+                    border: '1px solid var(--midnight-violet)',
+                    marginLeft: '8px'
+                  }}
+                >
+                  <option value="0.75">0.75x</option>
+                  <option value="1">1.0x</option>
+                  <option value="1.5">1.5x</option>
+                  <option value="2">2.0x</option>
+                </select>
+              </div>
+              <span className="statusbar-panel">Sec {activeSection + 1}</span>
+              <span className="statusbar-panel">{studyData[activeSection]?.items?.length || 0} Items</span>
+            </div>
+          </div>
+
+          <div className="taskbar">
+            <Link href="/" onClick={stop} className="start-btn" style={{ textDecoration: 'none', color: 'black' }}>
+              <span className="start-icon">⊞</span> Start
+            </Link>
+            <div className="taskbar-item">🌸 {subjectMeta.id}.doc</div>
+            <div 
+              className="start-btn" 
+              onClick={() => setIsRetroMode(false)} 
+              style={{ cursor: 'pointer', background: 'var(--amethyst-smoke)', color: 'white' }}
+            >
+              Switch to Modern
+            </div>
+            <div className="taskbar-clock">{currentTime}</div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Modern UI Default
   return (
     <div className="min-h-screen bg-gray-50 text-gray-900 pb-24 font-sans selection:bg-violet-200">
-      {/* Header */}
       <header className={`bg-gradient-to-r ${subjectMeta.color} text-white shadow-lg sticky top-0 z-50`}>
         <div className="max-w-5xl mx-auto px-4 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
           <div className="flex items-center gap-4">
@@ -38,8 +206,14 @@ export default function SubjectClient({ subjectMeta, studyData }: { subjectMeta:
             </div>
           </div>
           
-          {/* Global Controls */}
           <div className="flex items-center gap-3 bg-black/20 p-2 rounded-xl backdrop-blur-sm border border-white/10 shrink-0">
+            <button 
+              onClick={() => setIsRetroMode(true)}
+              className="bg-white/10 hover:bg-white/20 text-white border border-white/20 px-3 py-1 rounded-lg text-xs font-bold transition-all flex items-center gap-2 mr-2"
+              title="Switch to Retro Win95 Mode"
+            >
+              🌸 Retro Mode
+            </button>
             <div className="flex items-center gap-2">
               <label htmlFor="speed" className="text-sm font-semibold text-white/90">Speed</label>
               <select 
@@ -65,9 +239,7 @@ export default function SubjectClient({ subjectMeta, studyData }: { subjectMeta:
         </div>
       </header>
 
-      {/* Main Content */}
       <main className="max-w-5xl mx-auto px-4 py-8">
-        
         {studyData.length === 0 ? (
           <div className="text-center py-20 bg-white rounded-3xl border-2 border-dashed border-gray-300">
             <div className="text-4xl mb-4">📚</div>
@@ -85,7 +257,6 @@ export default function SubjectClient({ subjectMeta, studyData }: { subjectMeta:
           </div>
         ) : (
           <>
-            {/* Section Tabs */}
             <div className="flex flex-wrap gap-2 mb-8">
               {studyData.map((section: any, idx: number) => (
                 <button
@@ -102,7 +273,6 @@ export default function SubjectClient({ subjectMeta, studyData }: { subjectMeta:
               ))}
             </div>
 
-            {/* Content List */}
             <div className="space-y-6">
               {studyData[activeSection].items.map((item: any, idx: number) => {
                 const itemId = `item-${activeSection}-${idx}`;
