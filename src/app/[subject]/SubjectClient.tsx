@@ -30,6 +30,7 @@ const ClickableText = ({ text, itemId, isActive, charIndex, speak }: any) => {
         return (
           <span 
             key={i} 
+            id={isHighlighted ? "active-tts-word" : undefined}
             onClick={() => speak(text, itemId, tokenStart)}
             style={{ 
               cursor: 'pointer',
@@ -62,6 +63,21 @@ export default function SubjectClient({ subjectMeta, studyData }: { subjectMeta:
     }, 60000);
     return () => clearInterval(interval);
   }, []);
+
+  // Smart Auto-Scroll to active word
+  useEffect(() => {
+    if (isPlaying && !isPaused) {
+      const activeWord = document.getElementById('active-tts-word');
+      if (activeWord) {
+        const rect = activeWord.getBoundingClientRect();
+        // Scroll if the word is out of the comfortable viewing area (top 15% or bottom 15% of screen)
+        const isVisible = rect.top >= window.innerHeight * 0.15 && rect.bottom <= window.innerHeight * 0.85;
+        if (!isVisible) {
+          activeWord.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }
+    }
+  }, [charIndex, isPlaying, isPaused]);
 
   const handlePlayToggle = (text: string, id: string) => {
     if (currentId === id) {
@@ -200,15 +216,36 @@ export default function SubjectClient({ subjectMeta, studyData }: { subjectMeta:
             <Link href="/" onClick={stop} className="start-btn" style={{ textDecoration: 'none', color: 'black' }}>
               <span className="start-icon">⊞</span> Start
             </Link>
-            <div className="taskbar-item">🌸 {subjectMeta.id}.doc</div>
+            
+            {/* Sticky Global Playback Controls */}
+            {isPlaying && (
+              <div style={{ display: 'flex', gap: '4px', marginLeft: '10px' }}>
+                <button 
+                  onClick={isPaused ? resume : pause}
+                  className="start-btn" 
+                  style={{ background: 'var(--velvet-purple)', color: 'white' }}
+                >
+                  {isPaused ? '▶ Resume' : '⏸ Pause'}
+                </button>
+                <button 
+                  onClick={stop}
+                  className="start-btn" 
+                  style={{ background: 'var(--amethyst-smoke)', color: 'white' }}
+                >
+                  ⏹ Stop
+                </button>
+              </div>
+            )}
+            
+            <div className="taskbar-item" style={{ marginLeft: isPlaying ? '10px' : '0' }}>🌸 {subjectMeta.id}.doc</div>
             <div 
               className="start-btn" 
               onClick={() => setIsRetroMode(false)} 
-              style={{ cursor: 'pointer', background: 'var(--amethyst-smoke)', color: 'white' }}
+              style={{ cursor: 'pointer', background: 'var(--amethyst-smoke)', color: 'white', marginLeft: 'auto' }}
             >
               Switch to Modern
             </div>
-            <div className="taskbar-clock">{currentTime}</div>
+            <div className="taskbar-clock" style={{ marginLeft: '0' }}>{currentTime}</div>
           </div>
         </div>
       </div>
