@@ -45,9 +45,16 @@ export function useTTS() {
     const utterance = new SpeechSynthesisUtterance(textToSpeak);
     utterance.rate = rate;
     
-    // Try to find a good English voice
+    // Try to find a good English voice (Bypass forced regional accents on iOS)
     const voices = window.speechSynthesis.getVoices();
-    const bestVoice = voices.find(v => v.name.includes('Google US English') || v.name.includes('Premium')) || voices.find(v => v.lang.startsWith('en'));
+    const bestVoice = 
+      voices.find(v => v.name.includes('Google US English')) || 
+      voices.find(v => v.name.includes('Samantha')) || 
+      voices.find(v => v.name.includes('Daniel')) || 
+      voices.find(v => v.lang === 'en-US') || 
+      voices.find(v => v.lang === 'en-GB') || 
+      voices.find(v => v.lang.startsWith('en'));
+      
     if (bestVoice) {
       utterance.voice = bestVoice;
     }
