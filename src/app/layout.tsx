@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Audio Study Guide | Pulse.gg",
+  title: "Audio Study Guide",
   description: "A hyper-optimized study engine. Part of the Pulse.gg brand. Made by Sour.",
 };
 
