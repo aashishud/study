@@ -6,6 +6,48 @@ import { useTTS } from '@/hooks/useTTS';
 import Mermaid from '@/components/Mermaid';
 import './retro.css';
 
+const ClickableText = ({ text, itemId, isActive, charIndex, speak }: any) => {
+  const tokens = text.match(/\S+|\s+/g) || [];
+  let runningIndex = 0;
+  
+  return (
+    <>
+      {tokens.map((token: string, i: number) => {
+        const tokenStart = runningIndex;
+        runningIndex += token.length;
+        
+        const isWhitespace = /^\s+$/.test(token);
+        
+        if (isWhitespace) {
+          return <span key={i}>{token}</span>;
+        }
+
+        let isHighlighted = false;
+        if (isActive) {
+          isHighlighted = charIndex >= tokenStart && charIndex < tokenStart + token.length;
+        }
+
+        return (
+          <span 
+            key={i} 
+            onClick={() => speak(text, itemId, tokenStart)}
+            style={{ 
+              cursor: 'pointer',
+              backgroundColor: isHighlighted ? 'var(--velvet-purple)' : 'transparent',
+              color: isHighlighted ? 'white' : 'inherit',
+              padding: isHighlighted ? '0 2px' : '0',
+              borderRadius: '2px'
+            }}
+            title="Click to play from here"
+          >
+            {token}
+          </span>
+        );
+      })}
+    </>
+  );
+};
+
 export default function SubjectClient({ subjectMeta, studyData }: { subjectMeta: any, studyData: any }) {
   const { speak, pause, resume, stop, isPlaying, isPaused, rate, setRate, currentId, charIndex } = useTTS();
   const [activeSection, setActiveSection] = useState(0);
@@ -121,25 +163,7 @@ export default function SubjectClient({ subjectMeta, studyData }: { subjectMeta:
                       {item.diagram && <Mermaid chart={item.diagram} />}
 
                       <div style={{ whiteSpace: 'pre-wrap', lineHeight: '1.55' }}>
-                        {isActive ? (() => {
-                          const remaining = item.a.slice(charIndex);
-                          const match = remaining.match(/\s|[.,!?]/);
-                          const wordLen = match && match.index !== undefined ? match.index : remaining.length;
-                          
-                          const before = item.a.slice(0, charIndex);
-                          const currentWord = item.a.slice(charIndex, charIndex + wordLen);
-                          const after = item.a.slice(charIndex + wordLen);
-
-                          return (
-                            <>
-                              <span style={{ opacity: 0.6 }}>{before}</span>
-                              <span style={{ backgroundColor: 'var(--velvet-purple)', color: 'white', padding: '0 2px' }}>{currentWord}</span>
-                              <span>{after}</span>
-                            </>
-                          );
-                        })() : (
-                          item.a
-                        )}
+                        <ClickableText text={item.a} itemId={itemId} isActive={isActive} charIndex={charIndex} speak={speak} />
                       </div>
                     </div>
                   );
@@ -312,27 +336,7 @@ export default function SubjectClient({ subjectMeta, studyData }: { subjectMeta:
                     {item.diagram && <Mermaid chart={item.diagram} />}
 
                     <div className="prose prose-slate max-w-none text-gray-600 leading-relaxed whitespace-pre-wrap">
-                      {isActive ? (() => {
-                        const remaining = item.a.slice(charIndex);
-                        const match = remaining.match(/\s|[.,!?]/);
-                        const wordLen = match && match.index !== undefined ? match.index : remaining.length;
-                        
-                        const before = item.a.slice(0, charIndex);
-                        const currentWord = item.a.slice(charIndex, charIndex + wordLen);
-                        const after = item.a.slice(charIndex + wordLen);
-
-                        return (
-                          <>
-                            <span className="opacity-50">{before}</span>
-                            <span className="bg-amber-200 text-amber-900 font-bold px-1 rounded shadow-sm py-0.5 transition-colors">
-                              {currentWord}
-                            </span>
-                            <span>{after}</span>
-                          </>
-                        );
-                      })() : (
-                        item.a
-                      )}
+                      <ClickableText text={item.a} itemId={itemId} isActive={isActive} charIndex={charIndex} speak={speak} />
                     </div>
                   </div>
                 );

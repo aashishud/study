@@ -18,7 +18,9 @@ export function useTTS() {
   }, []);
 
   const stop = useCallback(() => {
-    window.speechSynthesis.cancel();
+    if (window.speechSynthesis.speaking || window.speechSynthesis.pending) {
+      window.speechSynthesis.cancel();
+    }
     setIsPlaying(false);
     setIsPaused(false);
     setCurrentId(null);
@@ -35,10 +37,12 @@ export function useTTS() {
     setIsPaused(false);
   }, []);
 
-  const speak = useCallback((text: string, id: string) => {
+  const speak = useCallback((text: string, id: string, startOffset: number = 0) => {
     stop();
     
-    const utterance = new SpeechSynthesisUtterance(text);
+    // We slice the text so it starts speaking from the clicked word
+    const textToSpeak = startOffset > 0 ? text.slice(startOffset) : text;
+    const utterance = new SpeechSynthesisUtterance(textToSpeak);
     utterance.rate = rate;
     
     // Try to find a good English voice
@@ -50,9 +54,12 @@ export function useTTS() {
 
     utteranceRef.current = utterance;
     
+    // Start highlighting immediately at the offset
+    setCharIndex(startOffset);
+    
     utterance.onboundary = (event) => {
       if (event.name === 'word') {
-        setCharIndex(event.charIndex);
+        setCharIndex(startOffset + event.charIndex);
       }
     };
     
