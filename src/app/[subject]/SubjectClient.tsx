@@ -9,7 +9,7 @@ import './retro.css';
 export default function SubjectClient({ subjectMeta, studyData }: { subjectMeta: any, studyData: any }) {
   const { speak, pause, resume, stop, isPlaying, isPaused, rate, setRate, currentId, charIndex } = useTTS();
   const [activeSection, setActiveSection] = useState(0);
-  const [isRetroMode, setIsRetroMode] = useState(false);
+  const [isRetroMode, setIsRetroMode] = useState(true);
   const [currentTime, setCurrentTime] = useState("");
 
   // Hydration-safe clock
