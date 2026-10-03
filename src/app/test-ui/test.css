@@ -1,0 +1,236 @@
+:root {
+  --white: #ffffffff;
+  --lavender-blush: #fff2fbff;
+  --petal-frost: #ffddf4ff;
+  --lilac: #c8a2c8ff;
+  --amethyst-smoke: #aa76b5ff;
+  --grape-soda: #874e92ff;
+  --velvet-purple: #602f6bff;
+  --midnight-violet: #301836ff;
+  --black: #000000ff;
+}
+
+.retro-theme * {
+  box-sizing: border-box;
+}
+
+.retro-theme {
+  font-family: Tahoma, "MS Sans Serif", Geneva, Verdana, sans-serif;
+  font-size: 14px;
+  color: var(--black);
+}
+
+.raised {
+  border-top: 2px solid var(--white);
+  border-left: 2px solid var(--white);
+  border-right: 2px solid var(--midnight-violet);
+  border-bottom: 2px solid var(--midnight-violet);
+}
+
+.sunken {
+  border-top: 2px solid var(--midnight-violet);
+  border-left: 2px solid var(--midnight-violet);
+  border-right: 2px solid var(--white);
+  border-bottom: 2px solid var(--white);
+}
+
+.desktop {
+  min-height: 100vh;
+  padding: 3rem 1.5rem 5rem;
+  background-image:
+    linear-gradient(rgba(48, 24, 54, 0.55), rgba(96, 47, 107, 0.55)),
+    url("https://images.pexels.com/photos/12339808/pexels-photo-12339808.jpeg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  display: flex;
+  justify-content: center;
+}
+
+.window {
+  width: min(94vw, 860px);
+  background: var(--lavender-blush);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+  border-top: 2px solid var(--white);
+  border-left: 2px solid var(--white);
+  border-right: 2px solid var(--black);
+  border-bottom: 2px solid var(--black);
+  display: flex;
+  flex-direction: column;
+}
+
+.titlebar {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.3rem 0.4rem;
+  background: linear-gradient(90deg, var(--velvet-purple), var(--grape-soda));
+  color: var(--white);
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.titlebar-icon {
+  font-size: 0.9rem;
+}
+
+.titlebar-text {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.titlebar-controls {
+  display: flex;
+  gap: 2px;
+}
+
+.win-btn {
+  width: 20px;
+  height: 18px;
+  background: var(--lilac);
+  border-top: 2px solid var(--white);
+  border-left: 2px solid var(--white);
+  border-right: 2px solid var(--midnight-violet);
+  border-bottom: 2px solid var(--midnight-violet);
+  font-family: Tahoma, sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--black);
+  padding: 0;
+  cursor: default;
+}
+
+.win-btn:active {
+  border-top: 2px solid var(--midnight-violet);
+  border-left: 2px solid var(--midnight-violet);
+  border-right: 2px solid var(--white);
+  border-bottom: 2px solid var(--white);
+}
+
+.win-btn-close {
+  background: var(--amethyst-smoke);
+}
+
+.menubar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.1rem;
+  padding: 0.3rem 0.6rem;
+  background: var(--lilac);
+  border-bottom: 1px solid var(--velvet-purple);
+  font-size: 0.85rem;
+}
+
+.menubar span {
+  cursor: pointer;
+}
+.menubar span:hover {
+  text-decoration: underline;
+}
+
+.content-panel {
+  padding: 1.1rem 1.3rem;
+  background: var(--white);
+  flex: 1;
+  overflow-y: auto;
+  max-height: 70vh;
+}
+
+.retro-theme h1 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--midnight-violet);
+  margin: 0 0 0.75rem;
+  font-family: Tahoma, sans-serif;
+}
+
+.retro-theme p {
+  line-height: 1.55;
+  margin: 0 0 1rem;
+  color: var(--black);
+}
+
+.retro-theme a {
+  color: var(--velvet-purple);
+  text-decoration: underline;
+}
+.retro-theme a:visited {
+  color: var(--grape-soda);
+}
+
+.statusbar {
+  display: flex;
+  gap: 2px;
+  padding: 0.3rem;
+  background: var(--lilac);
+  border-top: 1px solid var(--white);
+}
+
+.statusbar-panel {
+  padding: 0.15rem 0.6rem;
+  font-size: 0.75rem;
+  background: var(--lilac);
+  border-top: 1px solid var(--midnight-violet);
+  border-left: 1px solid var(--midnight-violet);
+  border-right: 1px solid var(--white);
+  border-bottom: 1px solid var(--white);
+}
+
+.taskbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.3rem 0.4rem;
+  background: var(--lilac);
+  border-top: 2px solid var(--white);
+  z-index: 9999;
+}
+
+.start-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.7rem;
+  background: var(--lilac);
+  border-top: 2px solid var(--white);
+  border-left: 2px solid var(--white);
+  border-right: 2px solid var(--midnight-violet);
+  border-bottom: 2px solid var(--midnight-violet);
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: default;
+}
+
+.start-icon {
+  font-size: 1rem;
+}
+
+.taskbar-item {
+  padding: 0.3rem 0.8rem;
+  background: var(--amethyst-smoke);
+  border-top: 2px solid var(--midnight-violet);
+  border-left: 2px solid var(--midnight-violet);
+  border-right: 2px solid var(--white);
+  border-bottom: 2px solid var(--white);
+  font-size: 0.8rem;
+  color: var(--white);
+}
+
+.taskbar-clock {
+  margin-left: auto;
+  padding: 0.3rem 0.7rem;
+  background: var(--lilac);
+  border-top: 2px solid var(--midnight-violet);
+  border-left: 2px solid var(--midnight-violet);
+  border-right: 2px solid var(--white);
+  border-bottom: 2px solid var(--white);
+  font-size: 0.8rem;
+}
