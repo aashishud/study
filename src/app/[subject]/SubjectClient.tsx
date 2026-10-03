@@ -71,8 +71,17 @@ export default function SubjectClient({ subjectMeta, studyData }: { subjectMeta:
         {studyData.length === 0 ? (
           <div className="text-center py-20 bg-white rounded-3xl border-2 border-dashed border-gray-300">
             <div className="text-4xl mb-4">📚</div>
-            <h2 className="text-2xl font-bold text-gray-400">No notes injected yet.</h2>
-            <p className="text-gray-500 mt-2">Waiting for data payload from the War Room.</p>
+            {subjectMeta.id === 'ad-designing' ? (
+              <>
+                <h2 className="text-2xl font-bold text-gray-400">No written exam.</h2>
+                <p className="text-gray-500 mt-2">Viva only.</p>
+              </>
+            ) : (
+              <>
+                <h2 className="text-2xl font-bold text-gray-400">Notes pending.</h2>
+                <p className="text-gray-500 mt-2">Study material will be uploaded soon.</p>
+              </>
+            )}
           </div>
         ) : (
           <>
