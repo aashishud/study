@@ -104,7 +104,7 @@ export default function SubjectPage({ params }: { params: Promise<{ subject: str
 
             {/* Content List */}
             <div className="space-y-6">
-              {studyData[activeSection].items.map((item, idx) => {
+              {studyData[activeSection].items.map((item: any, idx: number) => {
                 const itemId = `item-${activeSection}-${idx}`;
                 const isActive = currentId === itemId;
                 

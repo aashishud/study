@@ -1,6 +1,6 @@
-import { SubjectData } from "./types";
+import { StudySection } from "./types";
 
-export const filmCommunicationData: SubjectData[] = [
+export const filmCommunicationData: StudySection[] = [
   {
     section: "SECTION 1: 15-Mark Long Questions (Massive)",
     items: [
