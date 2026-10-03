@@ -33,7 +33,7 @@ export default function RootLayout({
         {/* Global Branding Watermark */}
         <div className="fixed bottom-3 right-4 z-50 pointer-events-none opacity-40 hover:opacity-100 transition-opacity duration-300">
           <p className="text-[10px] sm:text-xs font-mono tracking-wider text-white mix-blend-difference drop-shadow-md">
-            PART OF THE <a href="https://pulsegg.in" target="_blank" rel="noopener noreferrer" className="font-bold pointer-events-auto hover:text-rose-400 transition-colors">PULSE.GG</a> BRAND • MADE BY SOUR
+            <a href="https://pulsegg.in" target="_blank" rel="noopener noreferrer" className="font-bold pointer-events-auto hover:text-rose-400 transition-colors">PULSEGG</a> • MADE BY SOUR
           </p>
         </div>
       </body>
