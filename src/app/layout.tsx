@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -36,6 +37,8 @@ export default function RootLayout({
             <a href="https://pulsegg.in" target="_blank" rel="noopener noreferrer" className="font-bold pointer-events-auto hover:text-rose-400 transition-colors">PULSEGG</a> • MADE BY SOUR
           </p>
         </div>
+        
+        <Analytics />
       </body>
     </html>
   );
