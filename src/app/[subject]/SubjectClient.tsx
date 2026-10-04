@@ -213,40 +213,47 @@ export default function SubjectClient({ subjectMeta, studyData }: { subjectMeta:
           </div>
 
           <div className="taskbar">
-            <Link href="/" onClick={stop} className="start-btn" style={{ textDecoration: 'none', color: 'black', display: 'flex', alignItems: 'center', justifyContent: 'center', whiteSpace: 'nowrap', gap: '4px' }}>
+            <Link href="/" onClick={stop} className="start-btn" style={{ textDecoration: 'none', color: 'black', display: 'flex', alignItems: 'center', justifyContent: 'center', whiteSpace: 'nowrap', gap: '4px', flexShrink: 0 }}>
               <img src="/windows-logo.png" alt="Start" style={{ width: '14px', height: '14px' }} />
-              Start
+              <span className="hidden sm:inline">Start</span>
             </Link>
             
             {/* Sticky Global Playback Controls */}
             {isPlaying && (
-              <div style={{ display: 'flex', gap: '4px', marginLeft: '10px' }}>
+              <div style={{ display: 'flex', gap: '4px', marginLeft: '4px', flexShrink: 0 }}>
                 <button 
                   onClick={isPaused ? resume : pause}
                   className="start-btn" 
-                  style={{ background: 'var(--velvet-purple)', color: 'white' }}
+                  style={{ background: 'var(--velvet-purple)', color: 'white', padding: '2px 8px', flexShrink: 0 }}
+                  title={isPaused ? "Resume" : "Pause"}
                 >
-                  {isPaused ? '▶ Resume' : '⏸ Pause'}
+                  {isPaused ? '▶' : '⏸'}
                 </button>
                 <button 
                   onClick={stop}
                   className="start-btn" 
-                  style={{ background: 'var(--amethyst-smoke)', color: 'white' }}
+                  style={{ background: 'var(--amethyst-smoke)', color: 'white', padding: '2px 8px', flexShrink: 0 }}
+                  title="Stop"
                 >
-                  ⏹ Stop
+                  ⏹
                 </button>
               </div>
             )}
             
-            <div className="taskbar-item" style={{ marginLeft: isPlaying ? '10px' : '0' }}>🌸 {subjectMeta.id}.doc</div>
+            <div className="taskbar-item" style={{ marginLeft: isPlaying ? '4px' : '0', flex: 1, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+              🌸 {subjectMeta.id}.doc
+            </div>
+            
             <div 
               className="start-btn" 
               onClick={() => setIsRetroMode(false)} 
-              style={{ cursor: 'pointer', background: 'var(--amethyst-smoke)', color: 'white', marginLeft: 'auto' }}
+              style={{ cursor: 'pointer', background: 'var(--amethyst-smoke)', color: 'white', marginLeft: 'auto', flexShrink: 0, whiteSpace: 'nowrap', padding: '2px 8px' }}
             >
-              Switch to Modern
+              <span className="hidden sm:inline">Switch to Modern</span>
+              <span className="sm:hidden">Modern</span>
             </div>
-            <div className="taskbar-clock" style={{ marginLeft: '0' }}>{currentTime}</div>
+            
+            <div className="taskbar-clock hidden sm:flex" style={{ marginLeft: '4px', flexShrink: 0 }}>{currentTime}</div>
           </div>
         </div>
       </div>
