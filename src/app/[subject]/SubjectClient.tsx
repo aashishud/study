@@ -213,8 +213,8 @@ export default function SubjectClient({ subjectMeta, studyData }: { subjectMeta:
           </div>
 
           <div className="taskbar">
-            <Link href="/" onClick={stop} className="start-btn" style={{ textDecoration: 'none', color: 'black', display: 'flex', alignItems: 'center' }}>
-              <img src="/windows-logo.png" alt="Start" style={{ width: '14px', height: '14px', marginRight: '4px' }} />
+            <Link href="/" onClick={stop} className="start-btn" style={{ textDecoration: 'none', color: 'black', display: 'flex', alignItems: 'center', justifyContent: 'center', whiteSpace: 'nowrap', gap: '4px' }}>
+              <img src="/windows-logo.png" alt="Start" style={{ width: '14px', height: '14px' }} />
               Start
             </Link>
             
