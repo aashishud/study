@@ -1,10 +1,8 @@
-import { 
-  adDesigningData, 
-  mediaPlanningData 
-} from './studyData';
 import { ancientIndianCommData } from './ancientIndianComm';
 import { mediaLawsData } from './mediaLaws';
 import { filmCommunicationData } from './filmCommunication';
+import { mediaPlanningData } from './mediaPlanning';
+import { adDesigningData } from './studyData';
 
 export const subjects = [
   { id: 'film-communication', title: 'Film Communication - I', date: '08/10/2026 (Thursday)', color: 'from-rose-500 to-rose-700' },
